@@ -11,6 +11,13 @@ Consome a API de `secretaria-escolar-api`. Projeto de estudo, apenas com dados f
 
 Outros comandos: `yarn test` (Vitest) e `yarn build`.
 
+## Autenticação
+
+A URL da API fica em `src/environments` (`http://localhost:3039`). O login guarda os tokens no
+`sessionStorage` (somem ao fechar a aba); o interceptor envia o `Bearer` e, em 401, renova pelo
+refresh uma única vez (requisições simultâneas compartilham o mesmo refresh). O menu e os guards
+mostram só o que o papel do usuário pode usar, mas quem protege os dados é a API.
+
 ## Estrutura
 
 `src/app/core` (autenticação, interceptors, guards), `src/app/shared` (componentes comuns) e

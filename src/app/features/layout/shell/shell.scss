@@ -1,0 +1,22 @@
+.titulo {
+  font-weight: 500;
+  margin-right: 24px;
+}
+
+.espaco {
+  flex: 1;
+}
+
+.perfil {
+  margin-right: 8px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.ativo {
+  background: var(--mat-sys-secondary-container);
+}
+
+.conteudo {
+  padding: 16px;
+}
