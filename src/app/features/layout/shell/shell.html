@@ -1,0 +1,12 @@
+<mat-toolbar>
+  <span class="titulo">Secretaria Escolar</span>
+  <nav aria-label="Principal">
+    @for (item of itens(); track item.rota) {
+      <a mat-button [routerLink]="item.rota" routerLinkActive="ativo">{{ item.rotulo }}</a>
+    }
+  </nav>
+  <span class="espaco"></span>
+  <span class="perfil">{{ auth.role() }}</span>
+  <button mat-button type="button" (click)="auth.logout()">Sair</button>
+</mat-toolbar>
+<main class="conteudo"><router-outlet /></main>
