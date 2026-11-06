@@ -18,6 +18,20 @@ A URL da API fica em `src/environments` (`http://localhost:3039`). O login guard
 refresh uma única vez (requisições simultâneas compartilham o mesmo refresh). O menu e os guards
 mostram só o que o papel do usuário pode usar, mas quem protege os dados é a API.
 
+## Alunos
+
+Só ADMIN e SECRETARIA acessam (a API responde 403 ao PROFESSOR, então o menu e a rota também o
+escondem). A lista tem busca por nome com *debounce* de 300 ms, ordenação pelas três colunas que a
+API aceita (`fullName`, `registrationNumber`, `birthDate`) e paginação de 10, 20 ou 50. O estado da
+consulta fica em *signals* e um `switchMap` cancela a requisição anterior, então uma resposta lenta
+nunca sobrescreve a mais nova. Buscar, ordenar ou filtrar volta para a primeira página. Desativar
+pede confirmação; a API não tem rota para reativar.
+
+O formulário (`/alunos/novo` e `/alunos/:id/editar`) repete as regras da API: nome e responsável
+até 160 caracteres, telefone só com 10 ou 11 dígitos, e-mail opcional (vazio vai como `null`). A
+data aceita até ontem, porque a API recusa hoje. Erros que só o servidor detecta (por exemplo, uma
+data futura digitada à mão) aparecem no aviso, não ao lado do campo.
+
 ## Estrutura
 
 `src/app/core` (autenticação, interceptors, guards), `src/app/shared` (componentes comuns) e

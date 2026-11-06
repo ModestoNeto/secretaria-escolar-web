@@ -16,7 +16,7 @@ describe('menu por papel', () => {
   });
 
   it('PROFESSOR não vê matrículas, usuários nem auditoria', () => {
-    expect(rotas('PROFESSOR')).toEqual(['/painel', '/alunos', '/turmas', '/notas', '/boletim']);
+    expect(rotas('PROFESSOR')).toEqual(['/painel', '/turmas', '/notas', '/boletim']);
   });
 
   it('sem papel o menu é vazio', () => {
