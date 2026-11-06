@@ -1,12 +1,13 @@
 <main class="entrar">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Secretaria Escolar</mat-card-title>
-      <mat-card-subtitle>Entre com o seu e-mail e a sua senha</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
+  <div class="cartao">
+    <app-folha>
+      <div class="marca">
+        <span class="livro">Livro de matrículas</span>
+        <h1>Secretaria Escolar</h1>
+        <p>Identifique-se para abrir o livro.</p>
+      </div>
       <form [formGroup]="form" (ngSubmit)="entrar()" novalidate>
-        <mat-form-field appearance="outline">
+        <mat-form-field>
           <mat-label>E-mail</mat-label>
           <input matInput type="email" formControlName="email" autocomplete="username" required />
           @if (form.controls.email.hasError('required')) {
@@ -16,7 +17,7 @@
           }
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field>
           <mat-label>Senha</mat-label>
           <input matInput type="password" formControlName="password" autocomplete="current-password" required />
           <mat-error>Informe a senha</mat-error>
@@ -30,6 +31,7 @@
           {{ enviando() ? 'Entrando...' : 'Entrar' }}
         </button>
       </form>
-    </mat-card-content>
-  </mat-card>
+    </app-folha>
+  </div>
+  <p class="rodape">Projeto de portfólio · dados fictícios</p>
 </main>

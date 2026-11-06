@@ -1,14 +1,22 @@
-<h1>Alunos</h1>
+<app-cabecalho-pagina titulo="Alunos" subtitulo="Cadastro, busca e situação dos alunos da escola.">
+  <span nota class="nota-mao" aria-hidden="true">↳ ordenado por nome, de A a Z</span>
+  <div acoes>
+    <div class="carimbo-redondo" aria-hidden="true"><span>Ano letivo</span><b>{{ ano }}</b></div>
+    <a mat-flat-button routerLink="/alunos/novo">Novo aluno</a>
+  </div>
+</app-cabecalho-pagina>
 
 <div class="barra">
-  <mat-form-field appearance="outline">
+  <mat-form-field class="busca">
     <mat-label>Buscar por nome</mat-label>
     <input matInput type="search" [formControl]="busca" autocomplete="off" maxlength="100" />
   </mat-form-field>
   <mat-slide-toggle [checked]="includeInactive()" (change)="alternarInativos($event.checked)">
     Mostrar inativos
   </mat-slide-toggle>
-  <a mat-flat-button routerLink="/alunos/novo">Novo aluno</a>
+  @if (pagina(); as p) {
+    <span class="total mono" role="status">{{ p.totalElements }} registros</span>
+  }
 </div>
 
 @if (carregando()) {
@@ -35,15 +43,15 @@
       >
         <ng-container matColumnDef="registrationNumber">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Matrícula</th>
-          <td mat-cell *matCellDef="let s">{{ s.registrationNumber }}</td>
+          <td mat-cell *matCellDef="let s" class="mono">{{ s.registrationNumber }}</td>
         </ng-container>
         <ng-container matColumnDef="fullName">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Nome</th>
-          <td mat-cell *matCellDef="let s">{{ s.fullName }}</td>
+          <td mat-cell *matCellDef="let s" class="nome">{{ s.fullName }}</td>
         </ng-container>
         <ng-container matColumnDef="birthDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Nascimento</th>
-          <td mat-cell *matCellDef="let s">{{ s.birthDate | date: 'dd/MM/yyyy' }}</td>
+          <td mat-cell *matCellDef="let s" class="mono">{{ s.birthDate | date: 'dd/MM/yyyy' }}</td>
         </ng-container>
         <ng-container matColumnDef="guardianName">
           <th mat-header-cell *matHeaderCellDef>Responsável</th>
@@ -51,15 +59,17 @@
         </ng-container>
         <ng-container matColumnDef="situacao">
           <th mat-header-cell *matHeaderCellDef>Situação</th>
-          <td mat-cell *matCellDef="let s">{{ s.active ? 'Ativo' : 'Inativo' }}</td>
+          <td mat-cell *matCellDef="let s">
+            <span class="carimbo" [class.inativo]="!s.active">{{ s.active ? 'Ativo' : 'Inativo' }}</span>
+          </td>
         </ng-container>
         <ng-container matColumnDef="acoes">
           <th mat-header-cell *matHeaderCellDef>Ações</th>
-          <td mat-cell *matCellDef="let s">
-            <a mat-button [routerLink]="['/alunos', s.id, 'editar']" [attr.aria-label]="'Editar aluno ' + s.fullName">Editar</a>
+          <td mat-cell *matCellDef="let s" class="acoes">
+            <a class="link-tinta" [routerLink]="['/alunos', s.id, 'editar']" [attr.aria-label]="'Editar aluno ' + s.fullName">Editar</a>
             @if (s.active) {
               <button
-                mat-button
+                class="desativar"
                 type="button"
                 (click)="desativar(s)"
                 [attr.aria-label]="'Desativar aluno ' + s.fullName"

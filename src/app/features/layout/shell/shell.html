@@ -1,12 +1,23 @@
-<mat-toolbar>
-  <span class="titulo">Secretaria Escolar</span>
-  <nav aria-label="Principal">
+<div class="mesa">
+  <div class="topo">
+    <div class="marca">
+      <span class="livro">Livro de matrículas</span>
+      <span class="nome">Secretaria Escolar</span>
+    </div>
+    <div class="usuario">
+      <span class="perfil">{{ auth.role() }}</span>
+      <button class="menu-botao" mat-stroked-button type="button" [attr.aria-expanded]="menuAberto()" aria-controls="menu-principal" (click)="menuAberto.set(!menuAberto())">Menu</button>
+      <button mat-stroked-button type="button" (click)="auth.logout()">Sair</button>
+    </div>
+  </div>
+
+  <nav id="menu-principal" aria-label="Principal" [class.aberto]="menuAberto()">
     @for (item of itens(); track item.rota) {
-      <a mat-button [routerLink]="item.rota" routerLinkActive="ativo">{{ item.rotulo }}</a>
+      <a [routerLink]="item.rota" routerLinkActive="ativa" ariaCurrentWhenActive="page" (click)="menuAberto.set(false)">{{ item.rotulo }}</a>
     }
   </nav>
-  <span class="espaco"></span>
-  <span class="perfil">{{ auth.role() }}</span>
-  <button mat-button type="button" (click)="auth.logout()">Sair</button>
-</mat-toolbar>
-<main class="conteudo"><router-outlet /></main>
+
+  <app-folha>
+    <main><router-outlet /></main>
+  </app-folha>
+</div>

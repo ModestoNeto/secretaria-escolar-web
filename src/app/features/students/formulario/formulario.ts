@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CabecalhoPagina } from '../../../shared/cabecalho-pagina';
 import { StudentInput } from '../student.models';
 import { StudentService } from '../student.service';
 
@@ -19,48 +20,50 @@ const texto = [Validators.required, Validators.pattern(/\S/), Validators.maxLeng
 
 @Component({
   selector: 'app-formulario',
-  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [CabecalhoPagina, ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
   template: `
-    <h1>{{ id ? 'Editar aluno' : 'Novo aluno' }}</h1>
-    @if (matricula(); as m) {
-      <p>Matrícula {{ m }}</p>
-    }
+    <app-cabecalho-pagina [titulo]="id ? 'Editar aluno' : 'Nova ficha de aluno'" [subtitulo]="subtitulo()">
+      <a nota class="link-tinta" routerLink="/alunos">← Voltar para alunos</a>
+    </app-cabecalho-pagina>
     <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
-      <mat-form-field appearance="outline">
+      <mat-form-field>
         <mat-label>Nome completo</mat-label>
         <input matInput formControlName="fullName" autocomplete="off" required />
         <mat-error>Informe o nome (até 160 caracteres)</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field>
         <mat-label>Data de nascimento</mat-label>
         <input matInput type="date" formControlName="birthDate" [max]="maxima" required />
         <mat-error>Informe uma data anterior a hoje</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field>
         <mat-label>Responsável</mat-label>
         <input matInput formControlName="guardianName" autocomplete="off" required />
         <mat-error>Informe o responsável (até 160 caracteres)</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field>
         <mat-label>Telefone do responsável</mat-label>
         <input matInput type="tel" formControlName="guardianPhone" autocomplete="off" required />
         <mat-hint>Só números, com DDD</mat-hint>
         <mat-error>Informe 10 ou 11 dígitos, só números</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field>
         <mat-label>E-mail (opcional)</mat-label>
         <input matInput type="email" formControlName="email" autocomplete="off" />
         <mat-error>E-mail inválido</mat-error>
       </mat-form-field>
-      <a mat-button routerLink="/alunos">Cancelar</a>
-      <button mat-flat-button type="submit" [disabled]="enviando()">
-        {{ enviando() ? 'Salvando...' : 'Salvar' }}
-      </button>
+      <div class="rodape">
+        <a class="link-tinta" routerLink="/alunos">Cancelar</a>
+        <button mat-flat-button type="submit" [disabled]="enviando()">
+          {{ enviando() ? 'Salvando...' : 'Salvar ficha' }}
+        </button>
+      </div>
     </form>
   `,
   styles: `
-    :host { display: block; padding: 16px; max-width: 560px; }
-    form { display: flex; flex-direction: column; gap: 4px; }
+    :host { display: block; }
+    form { display: flex; flex-direction: column; gap: 8px; max-width: 680px; }
+    .rodape { display: flex; align-items: center; justify-content: flex-end; gap: 24px; padding-top: 18px; border-top: 1px solid var(--tinta); }
   `,
 })
 export class Formulario {
@@ -72,6 +75,9 @@ export class Formulario {
   protected readonly maxima = ontem();
   protected readonly enviando = signal(false);
   protected readonly matricula = signal<string | null>(null);
+  protected readonly subtitulo = computed(() =>
+    !this.id ? 'O número de matrícula é gerado ao salvar.' : this.matricula() ? `Matrícula ${this.matricula()}` : 'Carregando a ficha...',
+  );
 
   protected readonly form = inject(FormBuilder).nonNullable.group({
     fullName: ['', texto],
