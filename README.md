@@ -27,6 +27,11 @@ consulta fica em *signals* e um `switchMap` cancela a requisição anterior, ent
 nunca sobrescreve a mais nova. Buscar, ordenar ou filtrar volta para a primeira página. Desativar
 pede confirmação; a API não tem rota para reativar.
 
+O formulário (`/alunos/novo` e `/alunos/:id/editar`) repete as regras da API: nome e responsável
+até 160 caracteres, telefone só com 10 ou 11 dígitos, e-mail opcional (vazio vai como `null`). A
+data aceita até ontem, porque a API recusa hoje. Erros que só o servidor detecta (por exemplo, uma
+data futura digitada à mão) aparecem no aviso, não ao lado do campo.
+
 ## Estrutura
 
 `src/app/core` (autenticação, interceptors, guards), `src/app/shared` (componentes comuns) e

@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, TestRequest, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Page } from '../../../shared/page';
@@ -57,6 +58,7 @@ describe('Lista de alunos', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([]),
         { provide: MatDialog, useValue: { open: () => ({ afterClosed: () => of(confirmar) }) } },
       ],
     });

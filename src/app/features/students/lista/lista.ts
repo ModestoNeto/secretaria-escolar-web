@@ -12,6 +12,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 import { EMPTY, catchError, debounceTime, distinctUntilChanged, of, switchMap, tap } from 'rxjs';
 import { ConfirmarDialogo } from '../../../shared/confirmar-dialogo';
 import { SortField, Student } from '../student.models';
@@ -30,6 +31,7 @@ import { StudentService } from '../student.service';
     MatSlideToggleModule,
     MatSortModule,
     MatTableModule,
+    RouterLink,
   ],
   templateUrl: './lista.html',
   styleUrl: './lista.scss',
