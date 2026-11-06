@@ -18,7 +18,11 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'painel' },
       { path: 'painel', loadComponent: provisoria, data: { titulo: 'Painel' }, canActivate: [todos] },
-      { path: 'alunos', loadComponent: provisoria, data: { titulo: 'Alunos' }, canActivate: [todos] },
+      {
+        path: 'alunos',
+        canActivate: [gestao],
+        loadChildren: () => import('./features/students/students.routes').then((m) => m.STUDENT_ROUTES),
+      },
       { path: 'turmas', loadComponent: provisoria, data: { titulo: 'Turmas' }, canActivate: [todos] },
       { path: 'matriculas', loadComponent: provisoria, data: { titulo: 'Matrículas' }, canActivate: [gestao] },
       { path: 'notas', loadComponent: provisoria, data: { titulo: 'Notas e frequência' }, canActivate: [todos] },

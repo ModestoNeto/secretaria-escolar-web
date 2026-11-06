@@ -11,7 +11,7 @@ const GESTAO: Role[] = ['ADMIN', 'SECRETARIA'];
 
 export const ITENS_MENU: ItemMenu[] = [
   { rotulo: 'Painel', rota: '/painel', papeis: TODOS },
-  { rotulo: 'Alunos', rota: '/alunos', papeis: TODOS },
+  { rotulo: 'Alunos', rota: '/alunos', papeis: GESTAO },
   { rotulo: 'Turmas', rota: '/turmas', papeis: TODOS },
   { rotulo: 'Matrículas', rota: '/matriculas', papeis: GESTAO },
   { rotulo: 'Notas e frequência', rota: '/notas', papeis: TODOS },
