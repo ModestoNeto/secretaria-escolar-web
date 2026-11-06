@@ -14,6 +14,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
 import { EMPTY, catchError, debounceTime, distinctUntilChanged, of, switchMap, tap } from 'rxjs';
+import { CabecalhoPagina } from '../../../shared/cabecalho-pagina';
 import { ConfirmarDialogo } from '../../../shared/confirmar-dialogo';
 import { SortField, Student } from '../student.models';
 import { StudentService } from '../student.service';
@@ -21,6 +22,7 @@ import { StudentService } from '../student.service';
 @Component({
   selector: 'app-lista',
   imports: [
+    CabecalhoPagina,
     DatePipe,
     ReactiveFormsModule,
     MatButtonModule,
@@ -43,6 +45,7 @@ export class Lista {
 
   protected readonly colunas = ['registrationNumber', 'fullName', 'birthDate', 'guardianName', 'situacao', 'acoes'];
   protected readonly busca = new FormControl('', { nonNullable: true });
+  protected readonly ano = new Date().getFullYear();
 
   private readonly q = signal('');
   protected readonly page = signal(0);

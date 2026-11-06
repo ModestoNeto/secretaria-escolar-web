@@ -1,22 +1,118 @@
-.titulo {
-  font-weight: 500;
-  margin-right: 24px;
+.mesa {
+  box-sizing: border-box;
+  max-width: 1184px;
+  margin: 0 auto;
+  padding: 28px 32px 56px;
 }
 
-.espaco {
-  flex: 1;
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 0 8px 10px;
+}
+
+.marca {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.livro {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--suave);
+}
+
+.nome {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .perfil {
-  margin-right: 8px;
-  font-size: 0.85rem;
-  opacity: 0.8;
+  font-family: var(--mono);
+  font-size: 12px;
 }
 
-.ativo {
-  background: var(--mat-sys-secondary-container);
+nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 0 8px;
 }
 
-.conteudo {
-  padding: 16px;
+// abas de pasta: a ativa se funde com a folha
+nav a {
+  margin-bottom: -2px;
+  padding: 8px 16px;
+  border: 2px solid var(--tinta);
+  border-radius: 8px 8px 0 0;
+  background: var(--aba);
+  color: var(--tinta);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+nav a.ativa {
+  padding: 11px 16px 13px;
+  border-bottom-color: var(--papel);
+  background: var(--papel);
+  font-weight: 700;
+}
+
+.menu-botao {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .mesa {
+    padding: 16px 12px 40px;
+  }
+
+  .menu-botao {
+    display: inline-flex;
+  }
+
+  nav {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    margin: 0 8px 12px;
+    padding: 0;
+    border: 2px solid var(--tinta);
+    background: var(--papel);
+  }
+
+  nav.aberto {
+    display: flex;
+  }
+
+  nav a,
+  nav a.ativa {
+    margin: 0;
+    padding: 14px 16px;
+    border: 0;
+    border-bottom: 1px solid #cfc3a6;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  nav a.ativa {
+    background: var(--aba);
+  }
 }

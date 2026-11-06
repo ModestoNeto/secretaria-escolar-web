@@ -32,6 +32,18 @@ até 160 caracteres, telefone só com 10 ou 11 dígitos, e-mail opcional (vazio 
 data aceita até ontem, porque a API recusa hoje. Erros que só o servidor detecta (por exemplo, uma
 data futura digitada à mão) aparecem no aviso, não ao lado do campo.
 
+## Tema e componentes compartilhados
+
+O visual é "papel e tinta": mesa bege, folha creme com pauta, margem vermelha, tinta azul, carimbos
+no lugar de etiquetas e anotações à mão (Newsreader, IBM Plex Mono e Caveat). As cores e as fontes
+ficam em variáveis CSS no `src/styles.scss` (`--tinta`, `--papel`, `--caneta`...), que também
+sobrescrevem os tokens do Angular Material; nenhum componente define cor própria. Tudo que é
+enfeite (grão, furos, fita, carimbo redondo, anotações) é `aria-hidden` e não interfere no foco.
+
+Em `src/app/shared`: `Folha` (a folha de papel com as camadas decorativas, conteúdo por projeção) e
+`CabecalhoPagina` (título, subtítulo e ações), usado em todas as páginas. No celular o menu vira uma
+gaveta aberta pelo botão "Menu".
+
 ## Estrutura
 
 `src/app/core` (autenticação, interceptors, guards), `src/app/shared` (componentes comuns) e

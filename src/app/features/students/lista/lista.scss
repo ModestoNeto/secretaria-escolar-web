@@ -1,30 +1,61 @@
 :host {
   display: block;
-  padding: 16px;
 }
 
 .barra {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
+  gap: 8px 32px;
+  margin-bottom: 20px;
 }
 
-.barra mat-form-field {
+.busca {
   flex: 1 1 280px;
   max-width: 420px;
 }
 
+.total {
+  color: var(--suave);
+}
+
 .tabela {
   overflow-x: auto;
+  background: var(--papel);
+  border-top: 2px solid var(--tinta);
+  border-bottom: 2px solid var(--tinta);
 }
 
 table {
   width: 100%;
+  min-width: 760px;
+}
+
+.nome {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.acoes {
+  white-space: nowrap;
+}
+
+.desativar {
+  margin-left: 14px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--carimbo);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
 }
 
 .vazio,
 .falha {
   padding: 24px;
   text-align: center;
+  background: var(--papel);
 }
