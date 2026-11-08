@@ -1,6 +1,6 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -115,6 +115,8 @@ export class Detalhe {
   protected readonly disciplinas = toSignal(this.lerListaDaGestao<Disciplina>(() => this.service.disciplinas()), { initialValue: [] });
   protected readonly professores = toSignal(this.lerListaDaGestao<Professor>(() => this.service.professores()), { initialValue: [] });
 
+  private readonly formDirective = viewChild(FormGroupDirective);
+
   protected readonly form = inject(FormBuilder).nonNullable.group({
     subjectId: ['', Validators.required],
     teacherUserId: ['', Validators.required],
@@ -159,7 +161,8 @@ export class Detalhe {
     this.service.vincular(this.id, Number(subjectId), Number(teacherUserId)).subscribe({
       next: () => {
         this.enviando.set(false);
-        this.form.reset();
+        // resetForm (e não form.reset) também limpa o estado "enviado", que deixaria os campos vermelhos
+        this.formDirective()?.resetForm();
         this.aviso.open('Disciplina vinculada', 'OK', { duration: 3000 });
         this.carregarVinculos();
       },
