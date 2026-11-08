@@ -103,6 +103,11 @@ describe('Detalhe da turma', () => {
     expect(post.request.body).toEqual({ subjectId: 2, teacherUserId: 20 });
     post.flush({ ...VINCULO, id: 11, subjectId: 2 });
     http.expectOne((r) => r.method === 'GET' && r.url === `${API}/classes/3/subjects`).flush([VINCULO]);
+    fixture.detectChanges();
+
+    // depois de vincular, o formulário volta limpo e sem erros vermelhos
+    expect(selects[0].value).toBe('');
+    expect(html().querySelectorAll('mat-error')).toHaveLength(0);
   });
 
   it('desvincular confirma, chama DELETE e recarrega', () => {

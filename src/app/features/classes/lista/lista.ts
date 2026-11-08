@@ -38,7 +38,7 @@ import { ClassService } from '../class.service';
         </select>
       </mat-form-field>
       @if (turmas(); as t) {
-        <span class="total mono" role="status">{{ t.length }} turmas</span>
+        <span class="total mono" role="status">{{ t.length }} {{ t.length === 1 ? 'turma' : 'turmas' }}</span>
       }
     </div>
 
