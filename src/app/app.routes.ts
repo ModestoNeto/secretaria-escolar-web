@@ -23,7 +23,11 @@ export const routes: Routes = [
         canActivate: [gestao],
         loadChildren: () => import('./features/students/students.routes').then((m) => m.STUDENT_ROUTES),
       },
-      { path: 'turmas', loadComponent: provisoria, data: { titulo: 'Turmas' }, canActivate: [todos] },
+      {
+        path: 'turmas',
+        canActivate: [todos],
+        loadChildren: () => import('./features/classes/classes.routes').then((m) => m.CLASS_ROUTES),
+      },
       { path: 'matriculas', loadComponent: provisoria, data: { titulo: 'Matrículas' }, canActivate: [gestao] },
       { path: 'notas', loadComponent: provisoria, data: { titulo: 'Notas e frequência' }, canActivate: [todos] },
       { path: 'boletim', loadComponent: provisoria, data: { titulo: 'Boletim' }, canActivate: [todos] },
