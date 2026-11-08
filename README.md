@@ -30,7 +30,19 @@ pede confirmação; a API não tem rota para reativar.
 O formulário (`/alunos/novo` e `/alunos/:id/editar`) repete as regras da API: nome e responsável
 até 160 caracteres, telefone só com 10 ou 11 dígitos, e-mail opcional (vazio vai como `null`). A
 data aceita até ontem, porque a API recusa hoje. Erros que só o servidor detecta (por exemplo, uma
-data futura digitada à mão) aparecem no aviso, não ao lado do campo.
+data futura digitada à mão) aparecem no aviso, não ao lado do campo, com uma exceção: o CPF.
+
+### CPF
+
+O CPF é obrigatório e a chave de busca principal. No formulário ele recebe a **máscara enquanto se
+digita** (`000.000.000-00`) e é validado com a mesma regra da API (`features/students/cpf.ts`): 11
+dígitos, dígitos verificadores e nenhuma sequência repetida. Se estiver errado, aparece "CPF inválido"
+**ao lado do campo** (ao sair dele e ao tentar salvar), o envio é bloqueado e o foco vai para ele; a
+mensagem não repete o número digitado. O CPF vai para a API só com os dígitos, e o que ela devolve já
+vem com máscara. Erros que só o servidor sabe (`409 CPF já cadastrado` e `400 CPF inválido`) também
+aparecem no campo e somem quando o CPF é editado. Aluno antigo, cadastrado antes do CPF existir, abre com o
+campo vazio e só salva depois de informá-lo; na lista ele aparece como "—". A busca da lista aceita
+nome ou CPF (com ou sem máscara, inteiro ou o começo dele).
 
 ## Tema e componentes compartilhados
 

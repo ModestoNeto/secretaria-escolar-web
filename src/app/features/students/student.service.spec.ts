@@ -12,6 +12,7 @@ const INPUT: StudentInput = {
   birthDate: '2010-01-01',
   guardianName: 'Bia',
   guardianPhone: '11999998888',
+  cpf: '11144477735',
   email: null,
 };
 
