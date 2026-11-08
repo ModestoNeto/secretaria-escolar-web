@@ -7,9 +7,11 @@ export interface Student {
   guardianPhone: string;
   email: string | null;
   active: boolean;
+  cpf: string | null; // a API devolve com máscara; nulo nos alunos de antes do CPF existir
 }
 
-export type StudentInput = Omit<Student, 'id' | 'registrationNumber' | 'active'>;
+// o CPF enviado vai só com os dígitos (a API aceita os dois formatos)
+export type StudentInput = Omit<Student, 'id' | 'registrationNumber' | 'active' | 'cpf'> & { cpf: string };
 
 export type SortField = 'fullName' | 'registrationNumber' | 'birthDate';
 

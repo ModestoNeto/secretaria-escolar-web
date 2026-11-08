@@ -43,7 +43,7 @@ export class Lista {
   private readonly dialogo = inject(MatDialog);
   private readonly aviso = inject(MatSnackBar);
 
-  protected readonly colunas = ['registrationNumber', 'fullName', 'birthDate', 'guardianName', 'situacao', 'acoes'];
+  protected readonly colunas = ['registrationNumber', 'cpf', 'fullName', 'birthDate', 'guardianName', 'situacao', 'acoes'];
   protected readonly busca = new FormControl('', { nonNullable: true });
   protected readonly ano = new Date().getFullYear();
 

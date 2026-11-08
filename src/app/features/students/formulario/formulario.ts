@@ -1,4 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, ElementRef, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -6,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CabecalhoPagina } from '../../../shared/cabecalho-pagina';
+import { cpfValidator, mascararCpf, somenteDigitos } from '../cpf';
 import { StudentInput } from '../student.models';
 import { StudentService } from '../student.service';
 
@@ -30,6 +32,20 @@ const texto = [Validators.required, Validators.pattern(/\S/), Validators.maxLeng
         <mat-label>Nome completo</mat-label>
         <input matInput formControlName="fullName" autocomplete="off" required />
         <mat-error>Informe o nome (até 160 caracteres)</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>CPF</mat-label>
+        <input matInput formControlName="cpf" inputmode="numeric" maxlength="14" autocomplete="off" required (input)="mascarar($event)" />
+        <mat-hint>Só números; a máscara é automática</mat-hint>
+        <mat-error>
+          @if (form.controls.cpf.hasError('required')) {
+            Informe o CPF
+          } @else if (form.controls.cpf.hasError('cpf')) {
+            CPF inválido
+          } @else {
+            {{ form.controls.cpf.getError('servidor') }}
+          }
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
         <mat-label>Data de nascimento</mat-label>
@@ -70,6 +86,7 @@ export class Formulario {
   private readonly service = inject(StudentService);
   private readonly router = inject(Router);
   private readonly aviso = inject(MatSnackBar);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   protected readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id')) || null;
   protected readonly maxima = ontem();
@@ -81,6 +98,7 @@ export class Formulario {
 
   protected readonly form = inject(FormBuilder).nonNullable.group({
     fullName: ['', texto],
+    cpf: ['', [Validators.required, cpfValidator]],
     birthDate: ['', Validators.required],
     guardianName: ['', texto],
     guardianPhone: ['', [Validators.required, Validators.pattern(/^\d{10,11}$/)]],
@@ -93,21 +111,46 @@ export class Formulario {
       this.service.get(this.id).subscribe({
         next: (s) => {
           this.matricula.set(s.registrationNumber);
-          this.form.patchValue({ ...s, email: s.email ?? '' });
+          // aluno antigo sem CPF abre com o campo vazio: o required obriga a informar para salvar
+          this.form.patchValue({ ...s, email: s.email ?? '', cpf: s.cpf ?? '' });
         },
         error: () => this.router.navigateByUrl('/alunos'),
       });
     }
   }
 
+  protected mascarar(evento: Event): void {
+    const controle = this.form.controls.cpf;
+    const mascarado = mascararCpf((evento.target as HTMLInputElement).value);
+    if (mascarado !== controle.value) controle.setValue(mascarado);
+  }
+
+  private focarPrimeiroInvalido(): void {
+    const controles = this.form.controls;
+    const nome = (Object.keys(controles) as (keyof typeof controles)[]).find((k) => controles[k].invalid);
+    this.host.nativeElement.querySelector<HTMLElement>(`[formcontrolname=${nome}]`)?.focus();
+  }
+
+  // Erros de CPF que só o servidor sabe (já cadastrado, inválido) aparecem no próprio campo.
+  private mostrarErroDoCpf(e: HttpErrorResponse): void {
+    const mensagem: unknown = e.error?.message;
+    if (typeof mensagem !== 'string' || !/cpf/i.test(mensagem)) return;
+    const cpf = this.form.controls.cpf;
+    cpf.setErrors({ servidor: mensagem });
+    cpf.markAsTouched();
+    this.focarPrimeiroInvalido();
+  }
+
   protected salvar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.focarPrimeiroInvalido();
       return;
     }
     const v = this.form.getRawValue();
     const input: StudentInput = {
       fullName: v.fullName.trim(),
+      cpf: somenteDigitos(v.cpf),
       birthDate: v.birthDate,
       guardianName: v.guardianName.trim(),
       guardianPhone: v.guardianPhone,
@@ -119,7 +162,10 @@ export class Formulario {
         this.aviso.open(this.id ? 'Aluno atualizado' : 'Aluno cadastrado', 'OK', { duration: 3000 });
         this.router.navigateByUrl('/alunos');
       },
-      error: () => this.enviando.set(false),
+      error: (e: HttpErrorResponse) => {
+        this.enviando.set(false);
+        this.mostrarErroDoCpf(e);
+      },
     });
   }
 }

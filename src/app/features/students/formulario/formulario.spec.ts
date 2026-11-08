@@ -16,6 +16,7 @@ const ALUNO: Student = {
   guardianPhone: '11999998888',
   email: null,
   active: true,
+  cpf: '111.444.777-35',
 };
 
 describe('Formulário de aluno', () => {
@@ -35,6 +36,7 @@ describe('Formulário de aluno', () => {
   };
   const preencherTudo = () => {
     preencher('fullName', '  José Açaí ');
+    preencher('cpf', '111.444.777-35');
     preencher('birthDate', '2010-05-04');
     preencher('guardianName', ' Bia ');
     preencher('guardianPhone', '11999998888');
@@ -91,6 +93,7 @@ describe('Formulário de aluno', () => {
       guardianName: 'Bia',
       guardianPhone: '11999998888',
       email: null,
+      cpf: '11144477735', // vai só com os dígitos
     });
     expect(html().querySelector<HTMLButtonElement>('button[type=submit]')!.disabled).toBe(true);
     req.flush({ ...ALUNO, id: 8 });
@@ -121,8 +124,124 @@ describe('Formulário de aluno', () => {
     const req = http.expectOne(`${URL}/7`);
     expect(req.request.method).toBe('PUT');
     expect(req.request.body.email).toBeNull();
+    expect(req.request.body.cpf).toBe('11144477735');
     req.flush(ALUNO);
     expect(navegar).toHaveBeenCalledWith('/alunos');
+  });
+
+  // ---------- CPF ----------
+
+  const cpfInput = () => html().querySelector<HTMLInputElement>('[formcontrolname=cpf]')!;
+  const erroDo = (campo: string) =>
+    html()
+      .querySelector(`[formcontrolname=${campo}]`)!
+      .closest('mat-form-field')!
+      .querySelector('mat-error')
+      ?.textContent?.trim();
+
+  it('mascara o CPF enquanto digita', () => {
+    criar();
+
+    preencher('cpf', '11144477735');
+    expect(cpfInput().value).toBe('111.444.777-35');
+
+    preencher('cpf', '1114');
+    expect(cpfInput().value).toBe('111.4');
+  });
+
+  it('CPF inválido: não chama a API, mostra "CPF inválido" ao lado do campo e leva o foco até ele', () => {
+    criar();
+    preencherTudo();
+    preencher('cpf', '111.444.777-36');
+
+    submeter();
+
+    http.expectNone(URL);
+    expect(erroDo('cpf')).toBe('CPF inválido');
+    expect(document.activeElement).toBe(cpfInput());
+  });
+
+  it('o erro aparece ao sair do campo, antes de tentar salvar', () => {
+    criar();
+    preencher('cpf', '111.444.777-36');
+
+    cpfInput().dispatchEvent(new Event('blur'));
+    fixture.detectChanges();
+
+    expect(erroDo('cpf')).toBe('CPF inválido');
+    http.expectNone(URL);
+  });
+
+  it('CPF vazio pede para informar', () => {
+    criar();
+
+    submeter();
+
+    expect(erroDo('cpf')).toBe('Informe o CPF');
+  });
+
+  it('CPF repetido (409 do servidor) aparece no campo e reabilita o botão', () => {
+    criar();
+    preencherTudo();
+    submeter();
+
+    http.expectOne(URL).flush({ message: 'CPF já cadastrado' }, { status: 409, statusText: 'Conflict' });
+    fixture.detectChanges();
+
+    expect(erroDo('cpf')).toBe('CPF já cadastrado');
+    expect(document.activeElement).toBe(cpfInput());
+    expect(html().querySelector<HTMLButtonElement>('button[type=submit]')!.disabled).toBe(false);
+    expect(navegar).not.toHaveBeenCalled();
+  });
+
+  it('CPF recusado pelo servidor (400) também aparece no campo', () => {
+    criar();
+    preencherTudo();
+    submeter();
+
+    http.expectOne(URL).flush({ message: 'CPF inválido' }, { status: 400, statusText: 'Bad Request' });
+    fixture.detectChanges();
+
+    expect(erroDo('cpf')).toBe('CPF inválido');
+  });
+
+  it('o erro do servidor some quando o CPF é editado', () => {
+    criar();
+    preencherTudo();
+    submeter();
+    http.expectOne(URL).flush({ message: 'CPF já cadastrado' }, { status: 409, statusText: 'Conflict' });
+    fixture.detectChanges();
+
+    preencher('cpf', '529.982.247-25');
+    fixture.detectChanges();
+
+    expect(erroDo('cpf')).toBeUndefined();
+  });
+
+  it('erro de outro campo do servidor não marca o CPF', () => {
+    criar();
+    preencherTudo();
+    submeter();
+
+    http.expectOne(URL).flush({ message: 'fullName: não deve estar em branco' }, { status: 400, statusText: 'Bad Request' });
+    fixture.detectChanges();
+
+    expect(erroDo('cpf')).toBeUndefined();
+  });
+
+  it('aluno antigo sem CPF abre com o campo vazio e só salva depois de informar', () => {
+    criar('7');
+    http.expectOne(`${URL}/7`).flush({ ...ALUNO, cpf: null });
+    fixture.detectChanges();
+    expect(cpfInput().value).toBe('');
+
+    submeter();
+    http.expectNone(`${URL}/7`);
+    expect(erroDo('cpf')).toBe('Informe o CPF');
+
+    preencher('cpf', '52998224725');
+    submeter();
+    expect(http.expectOne(`${URL}/7`).request.body.cpf).toBe('52998224725');
   });
 
   it('aluno inexistente (404) volta para a lista', () => {

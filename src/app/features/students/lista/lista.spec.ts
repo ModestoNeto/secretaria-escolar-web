@@ -20,6 +20,7 @@ const aluno = (id: number, extra: Partial<Student> = {}): Student => ({
   guardianPhone: '11999998888',
   email: null,
   active: true,
+  cpf: '111.444.777-35',
   ...extra,
 });
 
@@ -82,6 +83,30 @@ describe('Lista de alunos', () => {
     expect(html().querySelectorAll('tr.mat-mdc-row')).toHaveLength(2);
     expect(html().textContent).toContain('01/01/2010');
     expect(html().textContent).toContain('Aluno 1');
+  });
+
+  it('mostra o CPF como a API devolve (com máscara) e um traço no aluno antigo sem CPF', () => {
+    responder(criar(), pagina([aluno(1), aluno(2, { cpf: null })]));
+
+    const celulas = [...html().querySelectorAll('tr.mat-mdc-row')].map((l) => l.textContent);
+    expect(celulas[0]).toContain('111.444.777-35');
+    expect(celulas[1]).toContain('—');
+    expect(html().textContent).toContain('CPF');
+  });
+
+  it('buscar por CPF envia o texto digitado em q, com ou sem máscara', () => {
+    vi.useFakeTimers();
+    responder(criar(), pagina([aluno(1)]));
+    const input = html().querySelector<HTMLInputElement>('input[type=search]')!;
+
+    input.value = '111.444';
+    input.dispatchEvent(new Event('input'));
+    vi.advanceTimersByTime(300);
+    const req = proxima();
+
+    expect(req.request.params.get('q')).toBe('111.444');
+    expect(req.request.params.get('page')).toBe('0');
+    req.flush(pagina([]));
   });
 
   it('lista vazia mostra o estado vazio', () => {
