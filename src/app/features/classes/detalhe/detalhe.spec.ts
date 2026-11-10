@@ -1,6 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
@@ -8,7 +8,14 @@ import { of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Role } from '../../../core/auth/auth.models';
 import { AuthService } from '../../../core/auth/auth.service';
+import { Matriculas } from '../matriculas/matriculas';
 import { Detalhe } from './detalhe';
+
+@Component({ selector: 'app-turma-matriculas', template: '' })
+class MatriculasFalso {
+  readonly turmaId = input.required<number>();
+  readonly capacidade = input<number | null>(null);
+}
 
 const API = environment.apiUrl;
 const TURMA = { id: 3, name: '5º A', gradeLevel: 5, shift: 'MORNING', schoolYear: 2026, capacity: 30 };
@@ -32,6 +39,8 @@ describe('Detalhe da turma', () => {
         { provide: MatDialog, useValue: { open: () => ({ afterClosed: () => of(confirmar) }) } },
       ],
     });
+    // as matrículas têm spec próprio; aqui só se confere que a gestão (e só ela) as vê
+    TestBed.overrideComponent(Detalhe, { remove: { imports: [Matriculas] }, add: { imports: [MatriculasFalso] } });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(Detalhe);
     fixture.detectChanges();
@@ -77,6 +86,14 @@ describe('Detalhe da turma', () => {
 
     expect(html().textContent).toContain('Você leciona 1 disciplina(s)');
     expect(html().textContent).not.toContain('Vincular disciplina');
+    expect(html().querySelector('app-turma-matriculas')).toBeNull();
+  });
+
+  it('gestão vê as matrículas da turma', () => {
+    criar('SECRETARIA');
+    responderGestao();
+
+    expect(html().querySelector('app-turma-matriculas')).not.toBeNull();
   });
 
   it('vincular sem escolher não chama a API', () => {
