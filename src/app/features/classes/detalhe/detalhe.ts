@@ -13,10 +13,11 @@ import { CabecalhoPagina } from '../../../shared/cabecalho-pagina';
 import { ConfirmarDialogo } from '../../../shared/confirmar-dialogo';
 import { Disciplina, Professor, Turma, Vinculo, rotuloTurno } from '../class.models';
 import { ClassService } from '../class.service';
+import { Matriculas } from '../matriculas/matriculas';
 
 @Component({
   selector: 'app-turma-detalhe',
-  imports: [CabecalhoPagina, ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [CabecalhoPagina, Matriculas, ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
   template: `
     <app-cabecalho-pagina [titulo]="turma()?.name ?? 'Turma'" [subtitulo]="resumo()">
       <a nota class="link-tinta" routerLink="/turmas">← Voltar para turmas</a>
@@ -75,6 +76,10 @@ import { ClassService } from '../class.service';
         </mat-form-field>
         <button mat-flat-button type="submit" [disabled]="enviando()">Vincular</button>
       </form>
+
+      @if (turma(); as t) {
+        <app-turma-matriculas [turmaId]="id" [capacidade]="t.capacity" />
+      }
     }
   `,
   styles: `
@@ -98,7 +103,7 @@ export class Detalhe {
   private readonly dialogo = inject(MatDialog);
   private readonly aviso = inject(MatSnackBar);
 
-  private readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
+  protected readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
   protected readonly gestao = computed(() => ['ADMIN', 'SECRETARIA'].includes(this.auth.role() ?? ''));
 
   protected readonly turma = signal<Turma | null>(null);

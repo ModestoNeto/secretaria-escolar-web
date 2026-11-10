@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Disciplina, Professor, Turma, TurmaInput, Vinculo } from './class.models';
+import { Disciplina, Matricula, Professor, Turma, TurmaInput, Vinculo } from './class.models';
 
 @Injectable({ providedIn: 'root' })
 export class ClassService {
@@ -43,5 +43,17 @@ export class ClassService {
 
   professores() {
     return this.http.get<Professor[]>(`${environment.apiUrl}/users`, { params: { role: 'PROFESSOR' } });
+  }
+
+  matriculas(classId: number) {
+    return this.http.get<Matricula[]>(`${this.url}/${classId}/enrollments`);
+  }
+
+  matricular(classId: number, studentId: number) {
+    return this.http.post<unknown>(`${environment.apiUrl}/enrollments`, { studentId, classId });
+  }
+
+  cancelarMatricula(id: number) {
+    return this.http.delete<void>(`${environment.apiUrl}/enrollments/${id}`);
   }
 }

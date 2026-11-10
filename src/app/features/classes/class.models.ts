@@ -36,3 +36,12 @@ export interface Professor {
   name: string;
   email: string;
 }
+
+export interface Matricula {
+  id: number;
+  studentId: number;
+  studentName: string;
+  registrationNumber: string;
+  status: 'ACTIVE' | 'CANCELLED';
+  enrolledAt: string;
+}
