@@ -87,6 +87,10 @@ describe('Detalhe da turma', () => {
     expect(html().textContent).toContain('Você leciona 1 disciplina(s)');
     expect(html().textContent).not.toContain('Vincular disciplina');
     expect(html().querySelector('app-turma-matriculas')).toBeNull();
+    // o professor chega às avaliações da disciplina dele, sem ver nome de professor nem botão de desvincular
+    expect(html().querySelector('a[href="/turmas/3/disciplinas/1/avaliacoes"]')).not.toBeNull();
+    expect(html().querySelector('.professor')).toBeNull();
+    expect(html().querySelector('.remover')).toBeNull();
   });
 
   it('gestão vê as matrículas da turma', () => {

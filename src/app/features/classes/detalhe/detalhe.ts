@@ -36,15 +36,22 @@ import { Matriculas } from '../matriculas/matriculas';
         <p class="aviso" role="status">Você leciona {{ lista.length }} disciplina(s) nesta turma.</p>
       } @else if (lista.length === 0) {
         <p class="aviso" role="status">Nenhuma disciplina vinculada ainda</p>
-      } @else {
+      }
+      @if (lista.length > 0) {
         <ul class="vinculos">
           @for (v of lista; track v.id) {
             <li>
               <span class="nome">{{ nomeDisciplina(v.subjectId) }}</span>
-              <span class="professor">{{ nomeProfessor(v.teacherUserId) }}</span>
-              <button class="remover" type="button" (click)="desvincular(v)" [attr.aria-label]="'Desvincular ' + nomeDisciplina(v.subjectId)">
-                Desvincular
-              </button>
+              @if (gestao()) {
+                <span class="professor">{{ nomeProfessor(v.teacherUserId) }}</span>
+              }
+              <a class="link-tinta" [routerLink]="['/turmas', id, 'disciplinas', v.subjectId, 'avaliacoes']"
+                 [attr.aria-label]="'Avaliações de ' + nomeDisciplina(v.subjectId)">Avaliações</a>
+              @if (gestao()) {
+                <button class="remover" type="button" (click)="desvincular(v)" [attr.aria-label]="'Desvincular ' + nomeDisciplina(v.subjectId)">
+                  Desvincular
+                </button>
+              }
             </li>
           }
         </ul>
