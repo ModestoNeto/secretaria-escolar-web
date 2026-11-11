@@ -19,7 +19,7 @@ class MatriculasFalso {
 
 const API = environment.apiUrl;
 const TURMA = { id: 3, name: '5º A', gradeLevel: 5, shift: 'MORNING', schoolYear: 2026, capacity: 30 };
-const VINCULO = { id: 10, classId: 3, subjectId: 1, teacherUserId: 20 };
+const VINCULO = { id: 10, classId: 3, subjectId: 1, subjectName: 'Matemática', teacherUserId: 20 };
 
 describe('Detalhe da turma', () => {
   let http: HttpTestingController;
@@ -85,6 +85,8 @@ describe('Detalhe da turma', () => {
     fixture.detectChanges();
 
     expect(html().textContent).toContain('Você leciona 1 disciplina(s)');
+    // o nome vem no vínculo, já que o professor não lê /subjects
+    expect(html().querySelector('.nome')?.textContent).toBe('Matemática');
     expect(html().textContent).not.toContain('Vincular disciplina');
     expect(html().querySelector('app-turma-matriculas')).toBeNull();
     // o professor chega às avaliações da disciplina dele, sem ver nome de professor nem botão de desvincular

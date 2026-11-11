@@ -28,6 +28,7 @@ export interface Vinculo {
   id: number;
   classId: number;
   subjectId: number;
+  subjectName: string;
   teacherUserId: number;
 }
 
