@@ -41,14 +41,14 @@ import { Matriculas } from '../matriculas/matriculas';
         <ul class="vinculos">
           @for (v of lista; track v.id) {
             <li>
-              <span class="nome">{{ nomeDisciplina(v.subjectId) }}</span>
+              <span class="nome">{{ v.subjectName }}</span>
               @if (gestao()) {
                 <span class="professor">{{ nomeProfessor(v.teacherUserId) }}</span>
               }
               <a class="link-tinta" [routerLink]="['/turmas', id, 'disciplinas', v.subjectId, 'avaliacoes']"
-                 [attr.aria-label]="'Avaliações de ' + nomeDisciplina(v.subjectId)">Avaliações</a>
+                 [attr.aria-label]="'Avaliações de ' + v.subjectName">Avaliações</a>
               @if (gestao()) {
-                <button class="remover" type="button" (click)="desvincular(v)" [attr.aria-label]="'Desvincular ' + nomeDisciplina(v.subjectId)">
+                <button class="remover" type="button" (click)="desvincular(v)" [attr.aria-label]="'Desvincular ' + v.subjectName">
                   Desvincular
                 </button>
               }
@@ -154,10 +154,6 @@ export class Detalhe {
     });
   }
 
-  protected nomeDisciplina(id: number): string {
-    return this.disciplinas().find((d) => d.id === id)?.name ?? `Disciplina ${id}`;
-  }
-
   protected nomeProfessor(id: number): string {
     return this.professores().find((p) => p.id === id)?.name ?? `Professor ${id}`;
   }
@@ -185,7 +181,7 @@ export class Detalhe {
   protected desvincular(v: Vinculo): void {
     this.dialogo
       .open(ConfirmarDialogo, {
-        data: { titulo: 'Desvincular disciplina', mensagem: `Desvincular ${this.nomeDisciplina(v.subjectId)} desta turma?` },
+        data: { titulo: 'Desvincular disciplina', mensagem: `Desvincular ${v.subjectName} desta turma?` },
       })
       .afterClosed()
       .pipe(
