@@ -47,6 +47,8 @@ import { Matriculas } from '../matriculas/matriculas';
               }
               <a class="link-tinta" [routerLink]="['/turmas', id, 'disciplinas', v.subjectId, 'avaliacoes']"
                  [attr.aria-label]="'Avaliações de ' + v.subjectName">Avaliações</a>
+              <a class="link-tinta" [routerLink]="['/turmas', id, 'disciplinas', v.subjectId, 'chamada']"
+                 [attr.aria-label]="'Chamada de ' + v.subjectName">Chamada</a>
               @if (gestao()) {
                 <button class="remover" type="button" (click)="desvincular(v)" [attr.aria-label]="'Desvincular ' + v.subjectName">
                   Desvincular
