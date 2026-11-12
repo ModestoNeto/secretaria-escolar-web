@@ -124,6 +124,7 @@ describe('Chamada', () => {
     campo.dispatchEvent(new Event('change'));
 
     http.expectNone((r) => r.url.includes('2999'));
+    expect(campo.value).toBe(HOJE);
   });
 
   it('turma sem alunos avisa e não mostra o botão de salvar', () => {

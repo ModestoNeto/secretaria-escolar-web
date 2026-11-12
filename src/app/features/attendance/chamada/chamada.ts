@@ -25,7 +25,7 @@ const hoje = (): string => {
 
     <label class="data">
       <span>Data da aula</span>
-      <input type="date" [value]="data()" [max]="limite" (change)="trocarData($any($event.target).value)" />
+      <input type="date" [value]="data()" [max]="limite" (change)="trocarData($any($event.target))" />
     </label>
 
     @if (erro()) {
@@ -106,12 +106,13 @@ export class Chamada {
     this.carregar();
   }
 
-  protected trocarData(valor: string): void {
-    // campo limpo ou data futura: mantém a data anterior (a API recusa futura)
-    if (!valor || valor > this.limite) {
+  protected trocarData(campo: HTMLInputElement): void {
+    // campo limpo ou data futura (a API recusa): volta o campo para a data anterior, para a tela não mostrar uma data e gravar outra
+    if (!campo.value || campo.value > this.limite) {
+      campo.value = this.data();
       return;
     }
-    this.data.set(valor);
+    this.data.set(campo.value);
     this.carregar();
   }
 
