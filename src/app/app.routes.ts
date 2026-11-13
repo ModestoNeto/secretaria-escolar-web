@@ -30,7 +30,11 @@ export const routes: Routes = [
       },
       { path: 'matriculas', loadComponent: provisoria, data: { titulo: 'Matrículas' }, canActivate: [gestao] },
       { path: 'notas', loadComponent: provisoria, data: { titulo: 'Notas e frequência' }, canActivate: [todos] },
-      { path: 'boletim', loadComponent: provisoria, data: { titulo: 'Boletim' }, canActivate: [todos] },
+      {
+        path: 'boletim',
+        canActivate: [todos],
+        loadChildren: () => import('./features/report/report.routes').then((m) => m.REPORT_ROUTES),
+      },
       { path: 'usuarios', loadComponent: provisoria, data: { titulo: 'Usuários' }, canActivate: [admin] },
       { path: 'auditoria', loadComponent: provisoria, data: { titulo: 'Auditoria' }, canActivate: [admin] },
       { path: 'acesso-negado', loadComponent: provisoria, data: { titulo: 'Acesso negado' } },

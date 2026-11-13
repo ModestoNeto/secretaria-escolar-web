@@ -45,6 +45,7 @@ const hoje = (): string => {
               <li>
                 <span class="nome">{{ l.studentName }}</span>
                 <span class="registro mono">{{ l.registrationNumber }}</span>
+                <a class="link-tinta" [routerLink]="['/boletim', l.studentId]" [attr.aria-label]="'Boletim de ' + l.studentName">Boletim</a>
                 <span class="opcoes" role="radiogroup" [attr.aria-label]="'Presença de ' + l.studentName">
                   <label>
                     <input type="radio" [name]="'p' + l.enrollmentId" [checked]="marcas()[l.enrollmentId] === true"

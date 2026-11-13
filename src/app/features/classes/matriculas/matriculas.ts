@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RouterLink } from '@angular/router';
 import { EMPTY, catchError, debounceTime, distinctUntilChanged, map, merge, of, switchMap } from 'rxjs';
 import { ConfirmarDialogo } from '../../../shared/confirmar-dialogo';
 import { Student } from '../../students/student.models';
@@ -16,7 +17,7 @@ import { ClassService } from '../class.service';
 // Matrículas da turma (só a gestão vê). Os erros 409 (sem vagas, aluno já matriculado no ano) viram aviso no erroInterceptor.
 @Component({
   selector: 'app-turma-matriculas',
-  imports: [ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule],
   template: `
     <h2>Alunos matriculados</h2>
     @if (erro()) {
@@ -31,6 +32,7 @@ import { ClassService } from '../class.service';
             <li>
               <span class="nome">{{ m.studentName }}</span>
               <span class="registro">{{ m.registrationNumber }}</span>
+              <a class="link-tinta" [routerLink]="['/boletim', m.studentId]" [attr.aria-label]="'Boletim de ' + m.studentName">Boletim</a>
               <button class="remover" type="button" (click)="cancelar(m)" [attr.aria-label]="'Cancelar matrícula de ' + m.studentName">
                 Cancelar matrícula
               </button>
