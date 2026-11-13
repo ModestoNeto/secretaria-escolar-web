@@ -3,6 +3,7 @@ import { HttpTestingController, TestRequest, provideHttpClientTesting } from '@a
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Matriculas } from './matriculas';
@@ -27,6 +28,7 @@ describe('Matrículas da turma', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([]),
         { provide: MatDialog, useValue: { open: () => ({ afterClosed: () => of(confirmar) }) } },
       ],
     });

@@ -31,6 +31,7 @@ import { GradeService } from '../grade.service';
               <li>
                 <span class="nome">{{ l.studentName }}</span>
                 <span class="registro mono">{{ l.registrationNumber }}</span>
+                <a class="link-tinta" [routerLink]="['/boletim', l.studentId]" [attr.aria-label]="'Boletim de ' + l.studentName">Boletim</a>
                 <label class="nota">
                   <span class="visualmente-oculto">Nota de {{ l.studentName }}</span>
                   <input type="number" step="0.01" min="0" [max]="avaliacao()?.maxScore ?? 999.99" inputmode="decimal"
